@@ -131,7 +131,7 @@ export function verifyDocumentFields(docType, extractedText, file) {
       status = status === "REJECTED" ? status : "NEEDS REVIEW";
     }
 
-    const regexMatch = rule.regex.test(extractedText);
+    const regexMatch = rule.regex ? rule.regex.test(extractedText) : true;
     if (!regexMatch) {
       notes.push(`${docType} specific format appears invalid.`);
       issues.push("format_mismatch");
