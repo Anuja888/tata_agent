@@ -1,6 +1,6 @@
 import re
 
-from agents.llm_utils import invoke_agent
+from .llm_utils import invoke_agent
 
 SYSTEM_PROMPT = """You are Tata Capital's Loan Eligibility Specialist.
 

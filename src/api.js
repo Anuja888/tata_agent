@@ -1,7 +1,7 @@
-const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:8000";
+const API_BASE = process.env.REACT_APP_API_URL || "/api";
 
 export async function sendChatMessage(message, sessionId) {
-  const response = await fetch(`${API_BASE}/api/chat`, {
+  const response = await fetch(`${API_BASE}/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message, session_id: sessionId }),
@@ -17,8 +17,8 @@ export async function sendChatMessage(message, sessionId) {
 
 export async function fetchAnalytics(sessionId) {
   const url = sessionId
-    ? `${API_BASE}/api/analytics?session_id=${sessionId}`
-    : `${API_BASE}/api/analytics`;
+    ? `${API_BASE}/analytics?session_id=${sessionId}`
+    : `${API_BASE}/analytics`;
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error("Failed to fetch analytics");
@@ -27,7 +27,7 @@ export async function fetchAnalytics(sessionId) {
 }
 
 export async function clearSession(sessionId) {
-  const response = await fetch(`${API_BASE}/api/session/${sessionId}`, {
+  const response = await fetch(`${API_BASE}/session/${sessionId}`, {
     method: "DELETE",
   });
   if (!response.ok) {
@@ -37,6 +37,6 @@ export async function clearSession(sessionId) {
 }
 
 export async function checkHealth() {
-  const response = await fetch(`${API_BASE}/api/health`);
+  const response = await fetch(`${API_BASE}/health`);
   return response.ok;
 }

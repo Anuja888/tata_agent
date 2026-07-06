@@ -1,4 +1,4 @@
-from services import analytics
+from backend.services import analytics
 
 FORBIDDEN_PHRASES = [
     "guaranteed",

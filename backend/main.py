@@ -5,9 +5,9 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from agents import emi_agent, kyc_agent, loan_agent, master_agent
-from models.schemas import ChatRequest, ChatResponse, HealthResponse
-from services import analytics, guardrails, memory_service
+from backend.agents import emi_agent, kyc_agent, loan_agent, master_agent
+from backend.models.schemas import ChatRequest, ChatResponse, HealthResponse
+from backend.services import analytics, guardrails, memory_service
 
 load_dotenv()
 
@@ -31,12 +31,12 @@ AGENT_HANDLERS = {
 }
 
 
-@app.get("/api/health", response_model=HealthResponse)
+@app.get("/health", response_model=HealthResponse)
 def health():
     return HealthResponse(status="ok", service="tata-capital-agent")
 
 
-@app.post("/api/chat", response_model=ChatResponse)
+@app.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest):
     start = time.perf_counter()
     history = memory_service.get_history_text(request.session_id)
@@ -68,12 +68,12 @@ def chat(request: ChatRequest):
     )
 
 
-@app.get("/api/analytics")
+@app.get("/analytics")
 def get_analytics(session_id: str = None):
     return analytics.get_stats(session_id)
 
 
-@app.delete("/api/session/{session_id}")
+@app.delete("/session/{session_id}")
 def clear_session(session_id: str):
     cleared = memory_service.clear_session(session_id)
     analytics.clear_session_stats(session_id)
