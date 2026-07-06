@@ -1,6 +1,8 @@
 import logging
 import time
 
+from pathlib import Path
+
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,7 +11,8 @@ from backend.agents import emi_agent, kyc_agent, loan_agent, master_agent
 from backend.models.schemas import ChatRequest, ChatResponse, HealthResponse
 from backend.services import analytics, guardrails, memory_service
 
-load_dotenv()
+dotenv_path = Path(__file__).resolve().parent / ".env"
+load_dotenv(dotenv_path)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("tata_agent")
@@ -32,11 +35,13 @@ AGENT_HANDLERS = {
 
 
 @app.get("/health", response_model=HealthResponse)
+@app.get("/api/health", response_model=HealthResponse)
 def health():
     return HealthResponse(status="ok", service="tata-capital-agent")
 
 
 @app.post("/chat", response_model=ChatResponse)
+@app.post("/api/chat", response_model=ChatResponse)
 def chat(request: ChatRequest):
     start = time.perf_counter()
     history = memory_service.get_history_text(request.session_id)
@@ -68,12 +73,14 @@ def chat(request: ChatRequest):
     )
 
 
-@app.get("/analytics")
+@app.get("/analytics", response_model=None)
+@app.get("/api/analytics", response_model=None)
 def get_analytics(session_id: str = None):
     return analytics.get_stats(session_id)
 
 
-@app.delete("/session/{session_id}")
+@app.delete("/session/{session_id}", response_model=None)
+@app.delete("/api/session/{session_id}", response_model=None)
 def clear_session(session_id: str):
     cleared = memory_service.clear_session(session_id)
     analytics.clear_session_stats(session_id)
